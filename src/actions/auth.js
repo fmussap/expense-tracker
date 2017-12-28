@@ -1,7 +1,8 @@
 import { firebase, googleAuthProvider } from '../firebase/firebase'
+import * as actions from './actions-type'
 
 export const login = (uid) => ({
-  type: 'LOGIN',
+  type: actions.LOGIN,
   uid
 })
 
@@ -12,7 +13,7 @@ export const startLogin = () => {
 }
 
 export const logout = () => ({
-  type: 'LOGOUT'
+  type: actions.LOGOUT
 })
 
 export const startLogout = () => {

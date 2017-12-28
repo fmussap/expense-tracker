@@ -2,6 +2,13 @@
 
 exports[`should render DashboardPage correctly 1`] = `
 <div>
-  Dashboard page content
+  <Link
+    replace={false}
+    to="/create"
+  >
+    create
+  </Link>
+  <Connect(ExpenseListFilters) />
+  <Connect(ExpenseList) />
 </div>
 `;
