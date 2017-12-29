@@ -1,35 +1,44 @@
-import { addExpense, removeExpense, editExpense } from '../../actions/expenses'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 
-describe('addExpense', () => {
+import { createExpense, addExpense, removeExpense, editExpense } from '../../actions/expenses'
+import expenses from '../fixtures/expenses'
+import database from '../../firebase/firebase'
+
+const createMockStore = configureMockStore([thunk])
+
+describe('createExpense', () => {
+  const expense = expenses[0]
   test('should add an expense', () => {
-    const expense = {
-      description: 'test desc',
-      note: 'note test',
-      amount: 5,
-      createdAt: 1514282568444
-    }
-    const action = addExpense(expense)
+    const action = createExpense(expense)
     expect(action).toEqual({
       type: 'ADD_EXPENSE',
-      expense: {
-        ...expense,
-        id: expect.any(String)
-      }
+      expense
     })
   })
+})
 
-  test('should add an unique id when creating an expense', () => {
-    const expense = {
-      description: 'test desc',
-      note: 'note test',
-      amount: 5,
-      createdAt: 1514282568444
-    }
-    const action = addExpense(expense)
-    const action2 = addExpense(expense)
-    expect(action.expense.id).not.toBeNull()
-    expect(action2.expense.id).not.toBeNull()
-    expect(action.expense.id).not.toBe(action2.expense.id)
+describe('addExpense', () => {
+  const store = createMockStore({})
+  const expenseData = {
+    description: expenses[1].description,
+    amount: expenses[1].amount,
+    note: expenses[1].note,
+    createdAt: expenses[1].createdAt
+  }
+  test('should add an expense to the database and store', async () => {
+    await store.dispatch(addExpense(expenseData))
+    const actions = store.getActions()
+
+    expect(actions[0]).toEqual({
+      type: 'ADD_EXPENSE',
+      expense: {
+        id: expect.any(String),
+        ...expenseData
+      }
+    })
+    const idSaved = await database.ref(`expenses/${actions[0].expense.id}`).once('value')
+    expect(idSaved.val()).toEqual(expenseData)
   })
 })
 
@@ -46,13 +55,8 @@ describe('removeExpense', () => {
 
 describe('editExpense', () => {
   test('should edit an expense', () => {
-    const expense = {
-      description: 'test desc',
-      note: 'note test',
-      amount: 5,
-      createdAt: 1514282568444
-    }
-    const action = addExpense(expense)
+    const expense = expenses[0]
+    const action = createExpense(expense)
     const action2 = editExpense(action.expense.id, {note: 'note updated'})
     expect(action.expense.note).not.toBe(action2.updates.note)
   })
