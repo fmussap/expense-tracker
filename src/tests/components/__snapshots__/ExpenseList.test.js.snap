@@ -2,6 +2,7 @@
 
 exports[`should render ExpenseList with expenses 1`] = `
 <div>
+  <Connect(ExpensesSummary) />
   <h1>
     Expense List
   </h1>

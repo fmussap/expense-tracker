@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import ExpenseListItem from './ExpenseListItem'
+import ExpensesSummary from './ExpensesSummary'
 import SelectExpenses from '../selectors/expenses-selector'
 
 export const ExpenseList = (props) => {
@@ -15,6 +16,7 @@ export const ExpenseList = (props) => {
   }
   return (
     <div>
+      <ExpensesSummary />
       <h1>Expense List</h1>
       {renderList()}
     </div>
