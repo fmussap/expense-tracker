@@ -4,8 +4,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const { apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId } = require('./src/config/keys')
-// console.log('api', apiKey)
-// console.log('process.env webpack', process.env.apiKey)
+console.log('api', apiKey)
+console.log('process.env webpack', process.env.apiKey)
 // if (process.env.NODE_ENV === 'test') {
 //   require('dotenv').config({ path: '.env.test' })
 // } else if (process.env.NODE_ENV === 'development') {
