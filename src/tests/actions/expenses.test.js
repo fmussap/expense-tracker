@@ -1,11 +1,29 @@
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
-import { createExpense, addExpense, removeExpense, editExpense } from '../../actions/expenses'
+import {
+  createExpense,
+  addExpense,
+  setExpenses,
+  startSetExpenses,
+  removeExpenseState,
+  removeExpense,
+  editExpenseState,
+  editExpense
+} from '../../actions/expenses'
 import expenses from '../fixtures/expenses'
 import database from '../../firebase/firebase'
 
+const uid = 'fakeuid'
 const createMockStore = configureMockStore([thunk])
+
+beforeEach(async () => {
+  const expenseDataInitial = {}
+  expenses.forEach(({ id, description, note, amount, createdAt }) => {
+    expenseDataInitial[id] = { description, note, amount, createdAt }
+  })
+  await database.ref(`users/${uid}/expenses`).set(expenseDataInitial)
+})
 
 describe('createExpense', () => {
   const expense = expenses[0]
@@ -19,7 +37,7 @@ describe('createExpense', () => {
 })
 
 describe('addExpense', () => {
-  const store = createMockStore({})
+  const store = createMockStore({ auth: { uid } })
   const expenseData = {
     description: expenses[1].description,
     amount: expenses[1].amount,
@@ -37,15 +55,37 @@ describe('addExpense', () => {
         ...expenseData
       }
     })
-    const idSaved = await database.ref(`expenses/${actions[0].expense.id}`).once('value')
+    const idSaved = await database.ref(`users/${uid}/expenses/${actions[0].expense.id}`).once('value')
     expect(idSaved.val()).toEqual(expenseData)
   })
 })
 
-describe('removeExpense', () => {
-  test('should remove an expense', () => {
-    const id = 123
-    const action = removeExpense({id})
+describe('setExpenses', () => {
+  test('should setup setExpenses action with data', () => {
+    const action = setExpenses(expenses)
+    expect(action).toEqual({
+      type: 'SET_EXPENSES',
+      expenses
+    })
+  })
+})
+
+describe('startSetExpenses', async () => {
+  test('should get all expenses from database and set as the state', async () => {
+    const store = createMockStore({ auth: { uid } })
+    await store.dispatch(startSetExpenses())
+    const actions = store.getActions()
+    expect(actions[0]).toEqual({
+      type: 'SET_EXPENSES',
+      expenses: expenses
+    })
+  })
+})
+
+describe('removeExpenseState', async() => {
+  test('should remove an expense of the state', () => {
+    const id = expenses[0].id
+    const action = removeExpenseState({id})
     expect(action).toEqual({
       type: 'REMOVE_EXPENSE',
       id
@@ -53,11 +93,47 @@ describe('removeExpense', () => {
   })
 })
 
-describe('editExpense', () => {
-  test('should edit an expense', () => {
-    const expense = expenses[0]
-    const action = createExpense(expense)
-    const action2 = editExpense(action.expense.id, {note: 'note updated'})
-    expect(action.expense.note).not.toBe(action2.updates.note)
+describe('removeExpense', async () => {
+  test('should remove an expense from database and state', async () => {
+    const id = expenses[0].id
+    const store = createMockStore({ auth: { uid } })
+    await store.dispatch(removeExpense({id}))
+    const isRemoved = await database.ref(`users/${uid}/expenses/${id}`).once('value')
+    const actions = store.getActions()
+    expect(actions[0]).toEqual({
+      type: 'REMOVE_EXPENSE',
+      id
+    })
+    expect(isRemoved.val()).toBeNull()
+  })
+})
+
+describe('editExpenseState', () => {
+  test('should edit an expense on the state', () => {
+    const id = expenses[0].id
+    const updates = {note: 'note updated'}
+    const action = editExpenseState(id, updates)
+    expect(action).toEqual({
+      type: 'EDIT_EXPENSE',
+      id,
+      updates
+    })
+  })
+})
+
+describe('editExpense', async () => {
+  test('should edit an expense from database and state', async () => {
+    const id = expenses[0].id
+    const store = createMockStore({ auth: { uid } })
+    const updates = {...expenses[0], note: 'note updated'}
+    await store.dispatch(editExpense(id, updates))
+    const isUpdated = await database.ref(`users/${uid}/expenses/${id}`).once('value')
+    const actions = store.getActions()
+    expect(actions[0]).toEqual({
+      type: 'EDIT_EXPENSE',
+      id,
+      updates
+    })
+    expect(isUpdated.val().note).toBe(updates.note)
   })
 })

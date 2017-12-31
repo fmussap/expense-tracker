@@ -19,7 +19,7 @@ describe('expensesReducer', () => {
     expect(state).toEqual([
       expenses[0]
     ])
-    const state2 = expensesReducer([{...expenses[0]}], action2)
+    const state2 = expensesReducer([expenses[0]], action2)
     expect(state2).toEqual([
       expenses[0],
       expenses[1]
@@ -31,7 +31,7 @@ describe('expensesReducer', () => {
       type: 'REMOVE_EXPENSE',
       id: expenses[1].id
     }
-    const state = expensesReducer([...expenses], action)
+    const state = expensesReducer(expenses, action)
     expect(state).toEqual([
       expenses[0]
     ])
@@ -46,11 +46,22 @@ describe('expensesReducer', () => {
         amount: 10
       }
     }
-    const state = expensesReducer([...expenses], action)
+    const state = expensesReducer(expenses, action)
     expect(state[0]).toEqual({
       ...expenses[0],
       description: 'pineapple',
       amount: 10
     })
+  })
+
+  test('should set expenses', () => {
+    const action = {
+      type: 'SET_EXPENSES',
+      expenses: [expenses[1]]
+    }
+    const state = expensesReducer(expenses, action)
+    expect(state).toEqual([
+      expenses[1]
+    ])
   })
 })
