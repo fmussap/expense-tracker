@@ -57,7 +57,7 @@ class ExpenseForm extends Component {
     } else {
       this.props.onSubmit({
         description: this.state.description,
-        amount: this.state.amount,
+        amount: parseFloat(this.state.amount),
         note: this.state.note,
         createdAt: this.state.createdAt.valueOf()
       })

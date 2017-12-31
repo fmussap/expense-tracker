@@ -16,6 +16,12 @@ import database from '../../firebase/firebase'
 
 const uid = 'fakeuid'
 const createMockStore = configureMockStore([thunk])
+const expense = {
+  description: expenses[0].description,
+  amount: expenses[0].amount,
+  note: expenses[0].note,
+  createdAt: expenses[0].createdAt
+}
 
 beforeEach(async () => {
   const expenseDataInitial = {}
@@ -26,7 +32,6 @@ beforeEach(async () => {
 })
 
 describe('createExpense', () => {
-  const expense = expenses[0]
   test('should add an expense', () => {
     const action = createExpense(expense)
     expect(action).toEqual({
@@ -123,9 +128,9 @@ describe('editExpenseState', () => {
 
 describe('editExpense', async () => {
   test('should edit an expense from database and state', async () => {
-    const id = expenses[0].id
+    const id = expense.id
     const store = createMockStore({ auth: { uid } })
-    const updates = {...expenses[0], note: 'note updated'}
+    const updates = {...expense, note: 'note updated'}
     await store.dispatch(editExpense(id, updates))
     const isUpdated = await database.ref(`users/${uid}/expenses/${id}`).once('value')
     const actions = store.getActions()
