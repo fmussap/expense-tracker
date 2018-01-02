@@ -20,7 +20,7 @@ exports[`should render Header correctly 1`] = `
         </h1>
       </Link>
       <button
-        className="button button--link"
+        className="button button--danger button--link"
         onClick={[Function]}
       >
         Logout

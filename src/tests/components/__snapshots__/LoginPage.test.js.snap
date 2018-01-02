@@ -10,15 +10,15 @@ exports[`should correctly render LoginPage 1`] = `
     <h1
       className="box-layout__title"
     >
-      Boilerplate
+      Expense Tracker
     </h1>
     <p>
-      Tag line for app.
+      Let's keep track of all expenses in one place.
     </p>
     <button
-      className="button"
+      className="loginBtn loginBtn--google"
     >
-      Login with Google
+      Sign in with Google
     </button>
   </div>
 </div>

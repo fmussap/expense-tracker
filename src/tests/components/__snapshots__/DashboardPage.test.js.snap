@@ -2,12 +2,7 @@
 
 exports[`should render DashboardPage correctly 1`] = `
 <div>
-  <Link
-    replace={false}
-    to="/create"
-  >
-    create
-  </Link>
+  <Connect(ExpensesSummary) />
   <Connect(ExpenseListFilters) />
   <Connect(ExpenseList) />
 </div>

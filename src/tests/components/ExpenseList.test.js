@@ -21,5 +21,5 @@ test('should not render expenseListItem when there is no expenses', () => {
 
 test('should show "no expenses" when there is no expenses', () => {
   const wrapper = shallow(<ExpenseList expenses={[]} />)
-  expect(wrapper.find('p').text()).toBe('no expenses')
+  expect(wrapper.find('span').text()).toBe('no expenses')
 })

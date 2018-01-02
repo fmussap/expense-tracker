@@ -1,14 +1,12 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 
 import ExpenseList from './ExpenseList'
 import ExpenseListFilters from './ExpenseListFilters'
+import ExpensesSummary from './ExpensesSummary'
 
 const DashboardPage = () => (
   <div>
-    <Link to='/create'>
-      create
-    </Link>
+    <ExpensesSummary />
     <ExpenseListFilters />
     <ExpenseList />
   </div>

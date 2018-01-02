@@ -15,9 +15,15 @@ export const EditExpensePage = (props) => {
   }
   return (
     <div>
-      <h1>Edit Expense</h1>
-      <ExpenseForm onSubmit={handleSubmit} expense={props.expense} />
-      <button onClick={handleClick}>Remove</button>
+      <div className='page-header'>
+        <div className='content-container'>
+          <h1>Edit Expense</h1>
+        </div>
+      </div>
+      <div className='content-container'>
+        <ExpenseForm onSubmit={handleSubmit} expense={props.expense} />
+        <button className='button button--danger' onClick={handleClick}>Remove expense</button>
+      </div>
     </div>
   )
 }
